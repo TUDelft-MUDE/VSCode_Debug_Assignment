@@ -1,0 +1,78 @@
+name: Autograding Tests
+on:
+  push:
+    branches:
+      - assignment
+      - solution
+  repository_dispatch:
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }} #https://stackoverflow.com/questions/62334460/git-history-in-a-github-action
+        fetch-depth: 0
+    - name: Set Jupyter platformdirs environment variable #to remove warning DeprecationWarning: Jupyter is migrating its paths to use standard platformdirs given by the platformdirs library
+      run: echo "JUPYTER_PLATFORM_DIRS=1" >> $GITHUB_ENV
+    - name: Test notebook
+      id: test-notebook
+      uses: classroom-resources/autograding-python-grader@v1
+      with:
+        timeout: 10
+        max-score: 10
+        setup-command: pip install numpy scipy pandas matplotlib jupyter ipykernel
+          pytest testbook
+    - name: Check placeholder line removed
+      id: check-placeholder-removed
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Check placeholder line removed
+        setup-command: ""
+        command: |
+          if grep -q '% REPLACE THIS LINE WITH YOUR MARKDOWN CONTENT' 3_commit_online.md; then
+            echo '❌ Error: The placeholder line "% REPLACE THIS LINE WITH YOUR MARKDOWN CONTENT" was not removed from 3_commit_online.md. Please replace this line with your own markdown content.'
+            exit 1
+          else
+            echo '✅ Success: The placeholder line has been properly removed from 3_commit_online.md'
+          fi
+        timeout: 10
+        max-score: 10 
+    
+    - name: Check multi-file commit
+      id: check-multi-file-commit
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Check multi-file commit
+        setup-command: ""
+        command: |
+          # Check all non-bot commits for any multi-file commit
+          if git log --pretty=format:'%H %an' | grep -v 'github-classroom\[bot\]' | cut -d' ' -f1 | while read commit; do
+            file_count=$(git show --name-only --pretty=format: "$commit" | grep -c '^')
+            if [ "$file_count" -gt 1 ]; then
+              echo "found"
+              exit 0
+            fi
+          done | grep -q found; then
+            echo '✅ Success: Multi-file commit detected in student work'
+          else
+            echo '❌ Error: No multi-file commits detected from student work. Please make a commit that includes both the markdown file and your figure.'
+            exit 1
+          fi
+        timeout: 15
+        max-score: 10
+    
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        CHECK-PLACEHOLDER-REMOVED_RESULTS: "${{steps.check-placeholder-removed.outputs.result}}"
+        CHECK-MULTI-FILE-COMMIT_RESULTS: "${{steps.check-multi-file-commit.outputs.result}}"
+        TEST-NOTEBOOK_RESULTS: "${{steps.test-notebook.outputs.result}}"
+      with:
+        runners: check-placeholder-removed, check-multi-file-commit, test-notebook
