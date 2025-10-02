@@ -1,27 +1,65 @@
-# Programming assignment 1.4 Commit to clean data
+# VS Code Debugging Assignment
 
-You can preview this assignment on https://mude.citg.tudelft.nl/workbook-2025/assignments/PA1.4/README.html. You can obtain your personal repository for submission on: https://classroom.github.com/a/BfzvPQKp
+This repository contains a small Python project to learn and practice debugging in Visual Studio Code (VS Code) for both scripts and Jupyter Notebooks.
 
-Before you can start this assignment, read the theory pages in the book: https://mude.citg.tudelft.nl/book/2025/programming/week_1_4.html ([Version control](https://mude.citg.tudelft.nl/book/2025/_git/github.com_TeachBooks_learn-programming/mude-2025/book/version_control/version_control.html) and [Jupyter Notebooks and git](https://mude.citg.tudelft.nl/book/2025/_git/github.com_TeachBooks_learn-programming/mude-2025/book/version_control/notebooks.html))
+- Main guide: see `1_debug_in_VSCode.md` for detailed, step‑by‑step instructions.
+- Practice files: `debug_example.py` and `debug_notebook.ipynb`.
 
-In this assignment you'll make exercises on:
-1. [Install GitHub Desktop](./1_install_github_desktop.md)
-2. [Make commit locally](./2_commit_local.md)
-3. [Make commit on GitHub online](./3_commit_online.md)
-4. [Fetch and pull from the remote repository](./4_fetch_pull.md)
-5. [Install git](./5_install_git.md)
-6. [Data cleaning](./6_data_cleaning.ipynb)
-7. [Data import](./7_data_import.ipynb)
+## Prerequisites
 
-You'll need to have done this to be able to make the workshop and group assignment.
+- VS Code installed: https://code.visualstudio.com/
+- Extensions:
+  - Python (ms-python.python)
+  - Jupyter (ms-toolsai.jupyter)
+- Python 3.12 with the packages from `requirements.txt`.
 
-You pass this PA if you:
-- edited multiple files in a single commit in exercise 2
-- replaced the markdown line in exercise 3
-- Cleaned the data properly in exercise 6
+## Setup
 
-For the fundamental programming concepts you'll work on [functions and matplotlib](./8_programming_fundamental_concepts.ipynb)
+1. Open this folder in VS Code: `File` → `Open Folder...` → select `VSCode_Debug_Assignment/`.
+2. Select interpreter: `Ctrl+Shift+P` → `Python: Select Interpreter` → choose a Python 3.12 environment.
+3. Install dependencies (if needed):
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-These exercises on fundamental programming concepts are not obligatory. If you struggle with one of the topics from the programming fundamentals, you're strongly advised to go through the linked reference materials by yourself ([functions](https://oit.tudelft.nl/learn-python/2025/basics/functions.html) and [matplotlib](https://oit.tudelft.nl/learn-python/2025/matplotlib/intro.html)). During the programming tutorial on Tuesday these steps will be demonstrated too.
+## Quick start: debug the script
 
-> By Tom van Woudenberg, Robert Lanzafame and Berend Bouvy, Delft University of Technology. CC BY 4.0, more info [on the Credits page of Workbook](https://mude.citg.tudelft.nl/workbook-2025/credits.html).
+1. Open `debug_example.py`.
+2. Create a launch config: `Run and Debug` → `create a launch.json` → Python.
+3. Set a breakpoint (e.g., on `return a / b`).
+4. Start debugging with F5, step through, inspect variables, and observe the `ZeroDivisionError` case.
+
+## Debugging a Notebook
+
+1. Open `debug_notebook.ipynb`.
+2. Select the correct kernel (Python 3.12).
+3. Use `Debug Cell` or `Run by Line`, set breakpoints in the gutter, and inspect variables.
+
+## Tasks (summary)
+
+Use `1_debug_in_VSCode.md` for the full walkthrough of each task.
+
+- Install VS Code and extensions.
+- Open the folder and select the Python interpreter.
+- Use and debug `debug_example.py` (breakpoints, step into/over/out, exception/conditional breakpoints).
+- Create a `launch.json` for Python debugging.
+- Debug a cell in `debug_notebook.ipynb`.
+- Optional: discover and debug tests from the Testing view.
+
+## Repository contents
+
+- `debug_example.py`: small script with a deliberate bug for practice.
+- `debug_notebook.ipynb`: notebook to practice cell debugging.
+- `1_debug_in_VSCode.md`: detailed instructions for all steps.
+- `requirements.txt`: Python dependencies.
+- `LICENSE`, `CITATION.cff`: licensing and citation info.
+
+## Tips
+
+- Use exception breakpoints to stop on errors automatically.
+- Prefer conditional breakpoints to pause only on interesting cases (e.g., `b == 0`).
+- Keep your interpreter consistent with `requirements.txt`.
+
+---
+
+For details, follow `1_debug_in_VSCode.md`.
